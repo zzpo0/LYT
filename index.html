@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Memory Project</title>
+<style>
+  body {
+    margin: 0;
+    background-color: black;
+    color: white;
+    font-family: "Pretendard", sans-serif;
+    overflow: hidden;
+  }
+  h1 {
+    text-align: center;
+    margin-top: 80px;
+    font-size: 24px;
+  }
+  #messages {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .msg {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0.8;
+    animation: float 15s infinite ease-in-out;
+  }
+  @keyframes float {
+    0% { transform: translateY(0px); opacity: 0.8; }
+    50% { transform: translateY(-30px); opacity: 0.5; }
+    100% { transform: translateY(0px); opacity: 0.8; }
+  }
+</style>
+</head>
+<body>
+  <h1>기억은 망각의 바다에 저장되었습니다.<br>당신의 흔적이 떠오릅니다...</h1>
+  <div id="messages"></div>
+
+<script>
+// 🔹 1. Google Sheet 공개 CSV 불러오기
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQrb8KlJpfeLcDVGXTVzCDvpylHfWq8XpajLUBD3lTA7g3yLg052MO0wx85v1Nsc8NKdzK0qcmnqz8E/pubhtml".replace("/edit#gid=0", "/gviz/tq?tqx=out:csv");
+
+// 🔹 2. Sheet 데이터 fetch
+fetch(sheetURL)
+  .then(res => res.text())
+  .then(csv => {
+    const lines = csv.split("\n").slice(1); // 첫 줄은 header
+    lines.forEach((line, i) => {
+      const msgText = line.split(",")[1]; // 두 번째 컬럼(응답 내용)
+      if (msgText && msgText.trim() !== "") {
+        const div = document.createElement("div");
+        div.className = "msg";
+        div.textContent = msgText;
+        // 랜덤 위치
+        div.style.top = Math.random() * 90 + "vh";
+        div.style.left = Math.random() * 80 + "vw";
+        document.getElementById("messages").appendChild(div);
+      }
+    });
+  });
+</script>
+</body>
+</html>
